@@ -4,6 +4,7 @@ from routers import get_locker_time, put_checkin, put_checkout
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import date, datetime
 from typing import Optional, Union
+from config.database import mongo_connection
 
 app = FastAPI()
 
@@ -24,7 +25,7 @@ app.include_router(put_checkin.router)
 
 class Locker(BaseModel):
     locker_id: int
-    locker_status: str
+    available: bool
     userId: Optional[str]
     timeIn: Optional[date]
     timeout: Optional[date]
@@ -34,3 +35,46 @@ class Locker(BaseModel):
 @app.get("/")
 def root():
     return {"message": "Hello World"}
+
+
+@app.put("/MockTest", status_code=201)
+def MockData():
+    mockDataList = [
+        {
+            "locker_id": 1,
+            "available": True,
+        },
+        {
+            "locker_id": 2,
+            "available": False,
+            "timeIn": "2021-01-02T10:00:00Z",
+            "timeout": "2021-01-02T12:00:00Z",
+            "userId": 101,
+            "package": "Bag",
+        },
+        {
+            "locker_id": 3,
+            "available": True,
+        },
+        {
+            "locker_id": 4,
+            "available": False,
+            "timeIn": "2021-01-03T08:00:00Z",
+            "timeout": "2021-01-03T10:00:00Z",
+            "userId": 102,
+            "package": "Phone",
+        },
+        {
+            "locker_id": 5,
+            "available": True,
+        },
+        {
+            "locker_id": 6,
+            "available": False,
+            "timeIn": "2021-01-04T12:00:00Z",
+            "timeout": "2021-01-04T14:00:00Z",
+            "userId": 103,
+            "package": "Tablet",
+        },
+    ]
+    mongo_connection["Locker"].insert_many(mockDataList)

@@ -32,8 +32,8 @@ def check_out_price(userId: str,locker_id: int):
         price += ceil(abs(moreexcess)/600)*20
     return price
 
-@router.put("/{userId}/{money}")            #คิดค่าใช้จ่ายและเงินทอนโดยแสดงค่าเงินทอนออกมา สุดท้ายถ้าเงินที่จ่ายเพียงพอจะ update status ใน database
-def check_out_price(userId: str,money: int):
+@router.put("/{userId}/{locker_id}/{money}")            #คิดค่าใช้จ่ายและเงินทอนโดยแสดงค่าเงินทอนออกมา สุดท้ายถ้าเงินที่จ่ายเพียงพอจะ update status ใน database
+def check_out_price(userId: str,money: int,locker_id: int):
     data = mongo_connection["Locker"].find_one({"userId": userId,"locker_id": locker_id},{"_id":False})
     moreexcess = 0
     price = 0

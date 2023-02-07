@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from routers import get_locker_time, put_checkin, put_checkout
 from fastapi.middleware.cors import CORSMiddleware
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from typing import Optional, Union
 from config.database import mongo_connection
 
@@ -44,11 +44,12 @@ def MockData():
             "locker_id": 1,
             "available": True,
         },
+        # late should get at 12.00
         {
             "locker_id": 2,
             "available": False,
-            "timeIn": "2021-01-02T10:00:00Z",
-            "timeout": "2021-01-02T12:00:00Z",
+            "timeIn": datetime.strptime("2023-02-07T10:00:00Z", "%Y-%m-%dT%H:%M:%SZ"),
+            "timeout": datetime.strptime("2023-02-07T12:00:00Z", "%Y-%m-%dT%H:%M:%SZ"),
             "userId": 101,
             "package": "Bag",
         },
@@ -56,11 +57,12 @@ def MockData():
             "locker_id": 3,
             "available": True,
         },
+        # not late
         {
             "locker_id": 4,
             "available": False,
-            "timeIn": "2021-01-03T08:00:00Z",
-            "timeout": "2021-01-03T10:00:00Z",
+            "timeIn": datetime.strptime("2023-02-03T08:00:00Z", "%Y-%m-%dT%H:%M:%SZ"),
+            "timeout": datetime.strptime("2023-02-08T10:00:00Z", "%Y-%m-%dT%H:%M:%SZ"),
             "userId": 102,
             "package": "Phone",
         },
@@ -68,13 +70,27 @@ def MockData():
             "locker_id": 5,
             "available": True,
         },
+        # late
         {
             "locker_id": 6,
             "available": False,
-            "timeIn": "2021-01-04T12:00:00Z",
-            "timeout": "2021-01-04T14:00:00Z",
+            "timeIn": datetime.strptime("2023-02-04T12:00:00Z", "%Y-%m-%dT%H:%M:%SZ"),
+            "timeout": datetime.strptime("2023-02-07T14:00:00Z", "%Y-%m-%dT%H:%M:%SZ"),
             "userId": 103,
             "package": "Tablet",
         },
     ]
     mongo_connection["Locker"].insert_many(mockDataList)
+
+
+@app.put("/Mock", status_code=201)
+def MockOneData():
+    mockData = {
+        "locker_id": 7,
+        "available": False,
+        "timeIn": datetime.now(),
+        "timeout": datetime.now() + timedelta(hours=1),
+        "userId": 103,
+        "package": "Tablet",
+    }
+    mongo_connection["Locker"].insert_one(mockData)

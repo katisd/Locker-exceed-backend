@@ -27,8 +27,8 @@ class Locker(BaseModel):
     locker_id: int
     available: bool
     userId: Optional[str]
-    timeIn: Optional[date]
-    timeout: Optional[date]
+    timeIn: Optional[datetime]
+    timeout: Optional[datetime]
     package: Optional[str]
 
 
@@ -50,7 +50,7 @@ def MockData():
             "available": False,
             "timeIn": datetime.strptime("2023-02-07T10:00:00Z", "%Y-%m-%dT%H:%M:%SZ"),
             "timeout": datetime.strptime("2023-02-07T12:00:00Z", "%Y-%m-%dT%H:%M:%SZ"),
-            "userId": 101,
+            "userId": "101",
             "package": "Bag",
         },
         {
@@ -61,9 +61,10 @@ def MockData():
         {
             "locker_id": 4,
             "available": False,
+
             "timeIn": datetime.strptime("2023-02-03T08:00:00Z", "%Y-%m-%dT%H:%M:%SZ"),
             "timeout": datetime.strptime("2023-02-08T10:00:00Z", "%Y-%m-%dT%H:%M:%SZ"),
-            "userId": 102,
+            "userId": "102",
             "package": "Phone",
         },
         {
@@ -76,7 +77,7 @@ def MockData():
             "available": False,
             "timeIn": datetime.strptime("2023-02-04T12:00:00Z", "%Y-%m-%dT%H:%M:%SZ"),
             "timeout": datetime.strptime("2023-02-07T14:00:00Z", "%Y-%m-%dT%H:%M:%SZ"),
-            "userId": 103,
+            "userId": "103",
             "package": "Tablet",
         },
     ]
